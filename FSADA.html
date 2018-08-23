@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Jeremiah Green" />
+
+
+<title>Financial Statement Analysis and Equity Valuation with Data Analytics in R</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/sandstone.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; background-color: #f8f8f8; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+pre, code { background-color: #f8f8f8; }
+code > span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code > span.dt { color: #204a87; } /* DataType */
+code > span.dv { color: #0000cf; } /* DecVal */
+code > span.bn { color: #0000cf; } /* BaseN */
+code > span.fl { color: #0000cf; } /* Float */
+code > span.ch { color: #4e9a06; } /* Char */
+code > span.st { color: #4e9a06; } /* String */
+code > span.co { color: #8f5902; font-style: italic; } /* Comment */
+code > span.ot { color: #8f5902; } /* Other */
+code > span.al { color: #ef2929; } /* Alert */
+code > span.fu { color: #000000; } /* Function */
+code > span.er { color: #a40000; font-weight: bold; } /* Error */
+code > span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #000000; } /* Constant */
+code > span.sc { color: #000000; } /* SpecialChar */
+code > span.vs { color: #4e9a06; } /* VerbatimString */
+code > span.ss { color: #4e9a06; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #000000; } /* Variable */
+code > span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code > span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code > span.ex { } /* Extension */
+code > span.at { color: #c4a000; } /* Attribute */
+code > span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code > span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 61px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 66px;
+  margin-top: -66px;
+}
+
+.section h2 {
+  padding-top: 66px;
+  margin-top: -66px;
+}
+.section h3 {
+  padding-top: 66px;
+  margin-top: -66px;
+}
+.section h4 {
+  padding-top: 66px;
+  margin-top: -66px;
+}
+.section h5 {
+  padding-top: 66px;
+  margin-top: -66px;
+}
+.section h6 {
+  padding-top: 66px;
+  margin-top: -66px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Accounting for Life</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="MainSite.html">Home</a>
+</li>
+<li>
+  <a href="TeachingSite.html">Teaching</a>
+</li>
+<li>
+  <a href="FSADA.html">Financial Statement Analysis with Data Analytics</a>
+</li>
+<li>
+  <a href="PhDStudentPrimer.html">PhD Student Primer</a>
+</li>
+<li>
+  <a href="ResearchSite.html">Research</a>
+</li>
+<li>
+  <a href="CVSite.html">CV</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Financial Statement Analysis and Equity Valuation with Data Analytics in R</h1>
+<h4 class="author"><em>Jeremiah Green<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a></em></h4>
+
+</div>
+
+
+<blockquote>
+<p>Disclaimer: WORK IN PROGRESS. This document is preliminary and may change. The document may (probably does) have errors that will be corrected throughout the course with your help. I encourage you to provide suggestions and seek clarification to help you and future students.</p>
+</blockquote>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>The goal of this course is to help you develop a working knowledge of two things: 1. valuing equity using financial statement analysis<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a> and 2. using data and data analytics tools to help answer important - sometimes difficult - questions relevant to financial statement analysis and valuation.</p>
+<p>This two part goal is ambitious. Because each part of the goal could involve countless hours, days, or years of learning and research (and has for many individuals), this course will primarily use a non-technical, non-exhaustive approach to achieving both parts of the goal. References to resources to deepen your understanding will be provided as much as possible. While no prerequisite is necessary, having a basic understanding of accounting finacial statements, statistical programming, and financial principles is helpful.</p>
+<p>This course is designed from the perspective of an equity analyst trying to create an informed valuation of a company. The company is a current company with common stock available on a major U.S. exchange chosen by the student. The student is required to put his or her valuation models and assumptions to the test with historical data. We use a large sample of stocks on the S&amp;P1500 broad market index over the past several decades with their associated annual financial statement data and market values.</p>
+<p>The final project for the course applies the principles throughout the course to help the student rigourously and competently answer questions about the chosen company such as: What is your forecast for next year’s earnings? How does next year’s forecast relate to your long-term earnings forecasts? How risky are the company’s earnings? What is your estimated fundamental value for the company’s common stock? How do you support your earnings forecasts and fundamental value?</p>
+<div id="required-materials" class="section level3">
+<h3>Required materials</h3>
+<ul>
+<li>R with RStudio (Free download available online)</li>
+<li>Selected course readings noted throughout the course</li>
+</ul>
+</div>
+<div id="additional-resources" class="section level3">
+<h3>Additional resources</h3>
+<ul>
+<li>R for Data Science by Garrett Grolemund and Hadley Wickham (<a href="http://r4ds.had.co.nz/" class="uri">http://r4ds.had.co.nz/</a>)</li>
+<li>Applied Predictive Modeling by Max Kuhn and Kjell Johnson</li>
+<li>Accounting for Value by Stephen Penman</li>
+<li>Financial Statement Analysis and Security Valuation by Stephen Penman</li>
+<li>A Guide to Econometrics by Peter Kennedy</li>
+<li>Principles of econometrics with R (<a href="https://bookdown.org/ccolonescu/RPoE4/" class="uri">https://bookdown.org/ccolonescu/RPoE4/</a>)</li>
+</ul>
+</div>
+<div id="grading-and-policies" class="section level3">
+<h3>Grading and Policies</h3>
+<table>
+<thead>
+<tr class="header">
+<th>%</th>
+<th>Graded work</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>70%</td>
+<td>Homework</td>
+</tr>
+<tr class="even">
+<td>30%</td>
+<td>Final project</td>
+</tr>
+</tbody>
+</table>
+<p>QUIZZES OR TESTS? GRADE DEPTH AND THOUGHTFULNESS…ETC</p>
+<p>DESCRIBE DETAILS OF HOMEWORK AND PROJECT… PUT IMPORTANT A&amp;M AND CLASS POLICIES HERE…</p>
+<p>EXPECTATIONS – COMING TO CLASS PREPARED, ETC (READ BEFORE AND HOLD ACCOUNTABLE…OR PROVIDE INFO IN CLASS????)</p>
+</div>
+<div id="outline" class="section level3">
+<h3>Outline</h3>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;font-weight: bold;">
+Week
+</th>
+<th style="text-align:left;font-weight: bold;">
+DATopic
+</th>
+<th style="text-align:left;font-weight: bold;">
+FSATopic
+</th>
+<th style="text-align:left;font-weight: bold;">
+Homework
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;width: 12em; ">
+Why look at data?
+</td>
+<td style="text-align:left;width: 12em; ">
+Who uses equity valuation?
+</td>
+<td style="text-align:left;width: 18em; ">
+Choose current company to analyze and value. Collect company and industry information.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;width: 12em; ">
+Basic R skills: R structure, reading in data, viewing data, simple data manipulation
+</td>
+<td style="text-align:left;width: 12em; ">
+</td>
+<td style="text-align:left;width: 18em; ">
+Open RStudio, install intial packages, load, open, and inspect data.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2
+</td>
+<td style="text-align:left;width: 12em; ">
+Data handling: training and testing data sets, learning versus overfitting, out-of-sample validity
+</td>
+<td style="text-align:left;width: 12em; ">
+Overfitting in accounting and finance
+</td>
+<td style="text-align:left;width: 18em; ">
+Set up training set to be used through most of class.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;width: 12em; ">
+Graphing, visualizing and treating outliers
+</td>
+<td style="text-align:left;width: 12em; ">
+How, what, which graphs? Objectives in equity valuation, market-to-book and earnings-to-price ratios
+</td>
+<td style="text-align:left;width: 18em; ">
+Histograms of market value of equity, book value of equity, earnings. Scatterplots for associations between market values and accounting values. Treat outliers.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3
+</td>
+<td style="text-align:left;width: 12em; ">
+Subsetting data
+</td>
+<td style="text-align:left;width: 12em; ">
+PEG ratio, industry variation, growth expectations
+</td>
+<td style="text-align:left;width: 18em; ">
+Create ratios and study variation across industries and over time.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+4-5
+</td>
+<td style="text-align:left;width: 12em; ">
+Modelling methods: OLS and related robust methods, non-linear and machine learning methods: tree-based models, model building and selection
+</td>
+<td style="text-align:left;width: 12em; ">
+Models of value based on book-value and earnings, permanent vs. transitory earnings
+</td>
+<td style="text-align:left;width: 18em; ">
+Value relevance value models based on book-value and earnings, include growth and negative earnings variables
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+6-7
+</td>
+<td style="text-align:left;width: 12em; ">
+Scale, ratios, KNN regression
+</td>
+<td style="text-align:left;width: 12em; ">
+Comparable company, multiples-based valuation, ratio decomposition
+</td>
+<td style="text-align:left;width: 18em; ">
+Estimate value based on MB, PE multiples
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+8
+</td>
+<td style="text-align:left;width: 12em; ">
+</td>
+<td style="text-align:left;width: 12em; ">
+Earnings prediction and using earnings to value a company
+</td>
+<td style="text-align:left;width: 18em; ">
+Create earnings forecasting models that can be used to value a company
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+9
+</td>
+<td style="text-align:left;width: 12em; ">
+</td>
+<td style="text-align:left;width: 12em; ">
+Valuation models: theory and background
+</td>
+<td style="text-align:left;width: 18em; ">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+10
+</td>
+<td style="text-align:left;width: 12em; ">
+</td>
+<td style="text-align:left;width: 12em; ">
+Longer term earnings forecasts, benchmark forecasts, custom forecasts
+</td>
+<td style="text-align:left;width: 18em; ">
+Create forecasting models for near term and long term earnings forecasts
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+11
+</td>
+<td style="text-align:left;width: 12em; ">
+</td>
+<td style="text-align:left;width: 12em; ">
+Accounting risk models: ROE, earnings-beta models, earnings shocks or loss models
+</td>
+<td style="text-align:left;width: 18em; ">
+Estimate required return
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+12
+</td>
+<td style="text-align:left;width: 12em; ">
+Ensemble methods, dealing with model and parameter uncertainty, combining forecasts from different models
+</td>
+<td style="text-align:left;width: 12em; ">
+</td>
+<td style="text-align:left;width: 18em; ">
+Combine earnings forecasts from different models
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+13
+</td>
+<td style="text-align:left;width: 12em; ">
+</td>
+<td style="text-align:left;width: 12em; ">
+Full financial statement forecasts. Putting valuation model together. Sense checking forecasts.
+</td>
+<td style="text-align:left;width: 18em; ">
+Create DCF and RIV model valuations
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+14-15
+</td>
+<td style="text-align:left;width: 12em; ">
+Final Project
+</td>
+<td style="text-align:left;width: 12em; ">
+</td>
+<td style="text-align:left;width: 18em; ">
+</td>
+</tr>
+</tbody>
+</table>
+<!--- Make in class learning active, interactive...
+      5-10 minute learning
+      2-3 minute small application, notes, discussion, etc
+      --->
+
+</div>
+</div>
+<div id="class-notes" class="section level2">
+<h2>Class Notes</h2>
+</div>
+<div id="week-1-introduction-to-data-analytics-and-financial-statement-analysis-for-equity-valuation" class="section level2">
+<h2>Week 1: Introduction to data analytics and financial statement analysis for equity valuation</h2>
+
+<p>Be able to answer and discuss the following questions:</p>
+<ul>
+<li>What is data analytics?</li>
+<li>Why is subjecting our theories, beliefs, and assumptions to data useful?</li>
+<li>What are some perils of looking at data?</li>
+<li>What is financial statement analysis?</li>
+<li>Why use financial accounting information to value a company’s equity?</li>
+<li>Who uses financial statement analysis?</li>
+<li>What are some different ways to use financial statement analysis in equity valuation?</li>
+</ul>
+<p>Be able to do the following:</p>
+<ul>
+<li>Find financial accounting and market information about a company.</li>
+<li>Find industry and analyst information about a company.</li>
+<li>Open and perform basic functions in R</li>
+<li>Load and view data</li>
+</ul>
+
+<ul>
+<li>R for Data Science-Getting started with R (<a href="http://r4ds.had.co.nz/introduction.html#prerequisites" class="uri">http://r4ds.had.co.nz/introduction.html#prerequisites</a>)</li>
+<li>How and why of FSA
+<ul>
+<li>Richard Sloan (2018). “Fundamental Analysis Redux”. <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3176340" class="uri">https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3176340</a></li>
+<li>Dan Gode and James Ohlson (2013). A spreadsheet walk through of financial statement analysis and valuation. <a href="http://www.godeohlson.com/" class="uri">http://www.godeohlson.com/</a>)</li>
+</ul></li>
+<li>Why even pursue financial statement analysis and equity valuation?
+<ul>
+<li>William Sharpe (1991). “The Arithmetic of Active Management”. <a href="https://www.cfapubs.org/doi/pdf/10.2469/faj.v47.n1.7" class="uri">https://www.cfapubs.org/doi/pdf/10.2469/faj.v47.n1.7</a></li>
+<li>Eugene Fama (1991). “Efficient Capital Markets: II”. <a href="https://onlinelibrary.wiley.com/doi/full/10.1111/j.1540-6261.1991.tb04636.x" class="uri">https://onlinelibrary.wiley.com/doi/full/10.1111/j.1540-6261.1991.tb04636.x</a></li>
+<li>Sanford Grossman and Joseph Stiglitz (1980). “On the Impossibility of Informationally Efficient Markets”. <a href="https://www.jstor.org/stable/1805228?seq=1#page_scan_tab_contents" class="uri">https://www.jstor.org/stable/1805228?seq=1#page_scan_tab_contents</a></li>
+<li>Allan Timmermann and Clive Granger (2004). “Efficient market hypothesis and forecasting”. <a href="https://www.sciencedirect.com/science/article/pii/S0169207003000128" class="uri">https://www.sciencedirect.com/science/article/pii/S0169207003000128</a></li>
+<li>Söhnke Bartram and Mark Grinblatt (2018). “Agnostic fundamental analysis works”. <a href="https://www.sciencedirect.com/science/article/pii/S0304405X1730315X" class="uri">https://www.sciencedirect.com/science/article/pii/S0304405X1730315X</a>)</li>
+<li>Stephen Penman (1991). “Return to Fundamentals”. (<a href="http://journals.sagepub.com/doi/pdf/10.1177/0148558X9200700403" class="uri">http://journals.sagepub.com/doi/pdf/10.1177/0148558X9200700403</a>)</li>
+</ul></li>
+<li>Finding information
+<ul>
+<li>NetAdvantage (library resource): <a href="http://tamu.libguides.com/az.php?a=n" class="uri">http://tamu.libguides.com/az.php?a=n</a></li>
+<li>Other resources (SEC Edgar, ThomsonOne, google finance, Mergent, …)</li>
+</ul></li>
+</ul>
+
+<p><em>Big questions</em></p>
+<ul>
+<li>Who uses financial statement analysis? Why? How?</li>
+<li>What is data analytics? Why do it? (Why not?)</li>
+<li>Why should and how do I challenge market prices with fundamental values?</li>
+</ul>
+<p><em>Working questions</em></p>
+<ul>
+<li>Which companies can I choose from?</li>
+<li>How do I choose a company?</li>
+<li>How do I get information about the company?</li>
+<li>What data do I use for the large scale data analytics?</li>
+<li>What is R?</li>
+<li>What is R-studio?</li>
+<li>How do I get and open R?</li>
+<li>How do I run R commands?</li>
+<li>How do I do simple tasks in R?</li>
+<li>How do I get the data for data analytics?</li>
+<li>How do I view the data?</li>
+<li>How is the information about my company related to the data I am looking at in R?</li>
+</ul>
+
+<p>This section provides small chunks of code that will help form a cookbook for your analysis tasks.</p>
+<p>Read in data. readRDS will read R data files. Note that the file path uses a forward slash in R. Point the file path to your saved version of the data.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">funddta&lt;-<span class="kw">readRDS</span>(<span class="st">&quot;C:/funddta.rds&quot;</span>)</code></pre></div>
+<p>Just print to the log file the column names and some of the rows of the data.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">funddta&lt;-<span class="kw">head</span>(funddta)</code></pre></div>
+<p>Open the data file to look at it.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">funddta&lt;-<span class="kw">View</span>(funddta)</code></pre></div>
+<p>Get the third row and save it as something else.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">newobj&lt;-funddta[<span class="dv">3</span>,]</code></pre></div>
+<p>Get the fifth column and save it as something else.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">newobj&lt;-funddta[,<span class="dv">5</span>]</code></pre></div>
+<p>Get the third entry of the fifth column you just got.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">newobj[[<span class="dv">3</span>]]</code></pre></div>
+
+<p>This data set comes from Compustat Standardized Industrial Annual file. What this means is someone collected annual financial statements (Form 10-K) filed with the Securities and Exchange Commission, collected a bunch of items from those financial statements and recorded them in a big database. There are a number of choices they have made in creating the database that could matter but that we will not discuss. To create our data set, I select companies on the SP1500 broad market index that have common stock listed on NYSE, AMEX, or NASDAQ sometime from January 1st, 1980 through the end of the database as of July 1st, 2018. I also match the companies to their CRSP identifier (permno). To get into our data, the companies must have Compustat’s fiscal year end market value of equity. I also get monthly returns for these companies from CRSP for possible use later in the course.</p>
+<p>This data set is only for teaching purposes in this course and can not be used for other purposes. I will provide this data set through the course system. TELL HOW TO DO IT HERE.</p>
+<p>Data can be collected from many different sources. Additional data could be combined with this data. Data could include getting text from reports or filings, analysts forecasts, market variables like returns or trading, news story measures, etc. We have accounting numbers from annual filings, but data could be collected from quarterly filings, IPO documents, and other SEC filings.</p>
+<!--THIS IS HOW I CREATED THE DATA-->
+<!--
+library(RPostgres)  # This is to connect to a remote data source
+library(getPass)    # getPass requests a password rather than writing into the program
+
+#----------COLLECT DATA------------------
+wrds <- dbConnect(Postgres(), host='wrds-pgdata.wharton.upenn.edu',port=9737,
+                  user='jrg',password=getPass(),  #need user account and password
+                  dbname='wrds',sslmode='require')
+                  
+# idxcst_his: iid identifies security issue, from is when it begins on index, thru is when it ends
+ids <- paste( "(SELECT ids1.*,c.naics FROM (SELECT CC3.gvkey,CC3.stdt,CC3.enddt,CC3.permno,CC3.linkst,",
+              "CASE WHEN CC3.linkend IS NULL THEN '2050-12-31' WHEN CC3.linkend IS NOT NULL THEN CC3.linkend END AS linkend",
+               "FROM (SELECT CC2.gvkey,CC2.stdt,CC2.enddt,CC2.permno,min(CC2.LINKDT) as linkst,max(CC2.LINKENDDT) as linkend",
+              "FROM (SELECT sp.*,cc.lpermno AS permno,cc.LINKDT,cc.LINKENDDT",
+              "FROM (SELECT ind2.gvkey,ind2.stdt,CASE WHEN ind2.enddt IS NULL THEN '2050-12-31' WHEN ind2.enddt IS NOT NULL THEN ind2.enddt END AS enddt",
+              "FROM (SELECT DISTINCT ind.gvkey,min(ind.from) as stdt,max(ind.thru) as enddt FROM comp.idxcst_his ind WHERE gvkeyx='031855' GROUP BY gvkey) ind2) sp",
+              "LEFT JOIN crsp.ccmxpf_linktable cc ON cc.LINKTYPE IN ('LU', 'LC', 'LD', 'LF', 'LN', 'LO', 'LS', 'LX') AND sp.gvkey=cc.gvkey) CC2",
+              "GROUP BY CC2.gvkey,CC2.permno,CC2.stdt,CC2.enddt) CC3) ids1 LEFT JOIN comp.company c ON ids1.gvkey=c.gvkey) ids")
+sql <- paste("SELECT res.* FROM (SELECT ids.*,cmp.datadate,abs(cmp.prcc_f)*cmp.csho as mv,cmp.ceq,cmp.ib,cmp.at,cmp.lt,cmp.che,cmp.ppent,cmp.act,",
+             "cmp.lct,cmp.dltt,cmp.sale,cmp.cogs,cmp.xsga,cmp.dp,cmp.xrd,cmp.xint,cmp.txt,cmp.ib,cmp.dv,cmp.dvt,cmp.oancf,cmp.ivncf,cmp.fincf",
+             "FROM",ids,"LEFT JOIN comp.funda cmp ON ids.gvkey=cmp.gvkey",
+             "AND cmp.datadate>='1980-01-01') res WHERE res.mv IS NOT NULL")
+# dbSendQuery and dbFetch are to submit query and to get the results
+res <- dbSendQuery(wrds, sql)
+funddta <- dbFetch(res, n = -1) 
+
+# get returns from CRSP, here we get monthly returns...keep it simple, we should also deal with delistings, etc
+sql <- paste("SELECT ids.*,cr.date,cr.ret,cr.askhi,cr.bidlo,cr.prc,cr.shrout,cr.vol",
+             "FROM",ids,"LEFT JOIN crsp.msf cr ON ids.permno=cr.permno AND ids.stdt<=cr.date AND cr.date<=ids.enddt")
+res <- dbSendQuery(wrds, sql)
+retdta <- dbFetch(res, n = -1) 
+          
+#-----------------------------------
+# going to save these two data sets for students to use, then they can start here          
+#-----------------------------------
+saveRDS(funddta,"C:/Users/jgreen/Documents/_Teaching/DAFSAProject/funddta.rds")
+saveRDS(retdta,"C:/Users/jgreen/Documents/_Teaching/DAFSAProject/retdta.rds")
+-->
+<p><em>Data definitions</em></p>
+<ul>
+<li>gvkey - Compustat’s company identifier</li>
+<li>stdt - The beginning date for company on SP1500 index</li>
+<li>enddt - The ending date for company on SP1500 index</li>
+<li>permno - CRSP’s company identifier</li>
+<li>linkst - The beginning date where the gvkey-permno link is good</li>
+<li>linkend - The ending date where the gvkey-permno link is good</li>
+<li>naics - North American Industry Classification System (NAICS) industry code: <a href="https://www.census.gov/eos/www/naics/" class="uri">https://www.census.gov/eos/www/naics/</a></li>
+<li>datadate - fiscal year end date</li>
+<li>mv - fiscal year end market value of common equity (all values in millions USD)</li>
+<li>ceq - common shareholder’s equity</li>
+<li>ib - earnings before extraordinary items</li>
+<li>at - total assets</li>
+<li>lt - total iabilities</li>
+<li>che - cash and cash equivalents</li>
+<li>ppent - net property, plant, and equipment</li>
+<li>act - total current assets</li>
+<li>lct - total current liabilities</li>
+<li>dltt - debt in long term liabilities</li>
+<li>sale - sales</li>
+<li>cogs - cost of goods sold</li>
+<li>xsga - selling, general, and administrative expenses</li>
+<li>dp - depreciation and amortization expense</li>
+<li>xrd - research and development expense</li>
+<li>xint - interest expense</li>
+<li>txt - income tax expense</li>
+<li>dv - cash dividends</li>
+<li>dvt - total dividends</li>
+<li>oancf - net cash flows from operating activities</li>
+<li>ivncf - net cash flows from investing activities</li>
+<li>fincf - net cash flows from financing activities</li>
+</ul>
+
+<ul>
+<li>Choose current company to analyze and value.</li>
+<li>Collect company and industry information.</li>
+<li>Open data set in R and find the value for the 100th row and 13th column. <!--5019.073--></li>
+</ul>
+
+<p><em>1/2 page summary - Grading: Complete/Incomplete</em></p>
+<ol style="list-style-type: decimal">
+<li>Which company have you chosen?</li>
+<li>One paragraph summary of the company’s business and the industry the company is in.</li>
+<li>Value for the 100th row and 13th column from the R data set.</li>
+</ol>
+
+</div>
+<div id="week-2-data-handling-and-visualizing" class="section level2">
+<h2>Week 2: Data handling and visualizing</h2>
+
+<p>Be able to answer and discuss the following questions:</p>
+<ul>
+<li>Why is being careful about overuse of a data sample so important?</li>
+<li>What are some ways to improve how what we learn in a sample applies elsewhere?</li>
+<li>What can we learn and what should we learn from a visual inspection of data?</li>
+</ul>
+<p>Be able to do the following:</p>
+<ul>
+<li>Create a subsample of data to use for learning (training data)</li>
+<li>Create a subsample of data to use for evaluating what I have learned (test data)</li>
+<li>Avoid having the test data become the new training data</li>
+<li>Graph data</li>
+<li>Graph a histogram</li>
+<li>Graph a scatterplot</li>
+<li>Identify outliers</li>
+<li>Identify if outliers are errors or just unusual</li>
+<li>Tranform data variables</li>
+<li>Reduce the influence of outliers</li>
+</ul>
+
+<ul>
+<li>Introductory article on training versus testing data (<a href="https://machinelearningmastery.com/difference-test-validation-datasets/" class="uri">https://machinelearningmastery.com/difference-test-validation-datasets/</a>)</li>
+<li>A study using a hold-out sample as testing data
+<ul>
+<li>Barber and Lyon (2012). “Firm Size, Book-to-Market Ratio, and Security Returns: A Holdout Sample of Financial Firms”. (<a href="https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1540-6261.1997.tb04826.x" class="uri">https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1540-6261.1997.tb04826.x</a>)</li>
+</ul></li>
+<li>Academic research facing the problem of overfitting data samples
+<ul>
+<li>Ioannadis (2005). “Why Most Published Research Findings Are False”. (<a href="http://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.0020124" class="uri">http://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.0020124</a>)</li>
+<li>Harvey (2017). “Presidential Address: The Scientific Outlook in Financial Economics” (<a href="https://onlinelibrary.wiley.com/doi/abs/10.1111/jofi.12530" class="uri">https://onlinelibrary.wiley.com/doi/abs/10.1111/jofi.12530</a>)</li>
+</ul></li>
+<li>R for Data Science-Data visualization (<a href="http://r4ds.had.co.nz/data-visualisation.html#statistical-transformations" class="uri">http://r4ds.had.co.nz/data-visualisation.html#statistical-transformations</a>)</li>
+</ul>
+
+<p><em>Big questions</em></p>
+<ul>
+<li>What is the big concern with overworking data?</li>
+<li>How do I address the overworking issue?</li>
+<li>How do data issues within a data set influence inferences we might make?</li>
+</ul>
+<p><em>Working questions</em></p>
+<ul>
+<li>How do I create a training data set?</li>
+<li>What should I consider when creating the training data set?</li>
+<li>How do I separate the testing data set?</li>
+<li>How do I graph a histogram?</li>
+<li>How do I graph a scatterplot?</li>
+<li>How do I transform the data?</li>
+<li>How do I remove outliers?</li>
+<li>How do I create book-to-market and price-to-earnings ratios?</li>
+</ul>
+
+<p>This section provides small chunks of code that will help form a cookbook for your analysis tasks.</p>
+<p>After reading in the data, we can create subsets of the data. There are a number of ways to do this, but we can stick with a simple set up. &lt;- means make the object on the left with whatever is on the right. %&gt;% means take something on the left and do the next thing on the right (or below here). Here we can create a training data set.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">workdta &lt;-<span class="st"> </span>funddta <span class="op">%&gt;%</span>
+<span class="st">           </span><span class="kw">filter</span>((funddta<span class="op">$</span>datadate<span class="op">&lt;</span><span class="st">&#39;1995-01-01&#39;</span>)<span class="op">|</span>(funddta<span class="op">$</span>datadate<span class="op">&gt;</span><span class="st">&#39;2000-01-01&#39;</span> <span class="op">&amp;</span><span class="st"> </span>funddta<span class="op">$</span>datadate<span class="op">&lt;=</span><span class="st">&#39;2005-12-31&#39;</span>))</code></pre></div>
+<p>To discipline ourselves from looking at the testing data set, we can remove the full data set.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">rm</span>(funddta)</code></pre></div>
+<p>We can check the dimensions of data.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">nrow</span>(funddta)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ncol</span>(funddta)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">length</span>(funddta<span class="op">$</span>mv)</code></pre></div>
+<p>Build a graph and plot it. This is for a histogram of market value of equity. Other types of plots are also possible.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"> p =<span class="st"> </span><span class="kw">ggplot</span>(workdta, <span class="kw">aes</span>(<span class="dt">x=</span>mv)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_histogram</span>()
+ p</code></pre></div>
+<p>To get some summary values of the same thing.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(workdta<span class="op">$</span>mv)</code></pre></div>
+<p>To transform data we can use functions that alter the spread between values. A log transformation is common. We can just create a new variable in the data set.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">workdta<span class="op">$</span>lmv &lt;-<span class="st"> </span><span class="kw">log</span>(workdta<span class="op">$</span>mv)</code></pre></div>
+<p>To remove the influence of outliers we could also consider just removing the extreme observations.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span>workdta <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">filter</span>(mv<span class="op">&lt;</span><span class="dv">5000</span>) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x=</span>mv))<span class="op">+</span><span class="kw">geom_histogram</span>()</code></pre></div>
+<p>Another possibility is to winsorize (manually adjust) the outlier values.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">workdta<span class="op">$</span>mv[workdta<span class="op">$</span>mv <span class="op">&gt;</span><span class="st"> </span><span class="dv">5000</span>]&lt;-<span class="st"> </span><span class="dv">5000</span>   </code></pre></div>
+<p>A scatterplot can help understand the association between two variables. Here between earnings and market value of equity.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p =<span class="st"> </span><span class="kw">ggplot</span>(workdta,<span class="kw">aes</span>(<span class="dt">x=</span>ib,<span class="dt">y=</span>mv)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_point</span>()
+p  </code></pre></div>
+<p>Above we’ve already done it, but it is easy to create new variables.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">workdta<span class="op">$</span>bm &lt;-<span class="st"> </span>workdta<span class="op">$</span>ceq<span class="op">/</span>workdta<span class="op">$</span>mv</code></pre></div>
+
+<ul>
+<li>Create the training and testing data sets.</li>
+<li>Create a scatterplot where y is mv and x is earnings (ib) and where x is accounting value of equity (ceq)</li>
+<li>Repeat the scatterplots transforming the data</li>
+<li>Repeat the scatterplots removing outliers</li>
+<li>Repeat the scatterplots winsorizing outliers</li>
+<li>Create book-to-market and earnings-to-price ratios</li>
+<li>Summarize the BM and EP ratios (min, median, mean, max)</li>
+<li>Winsorize the BM and EP ratios and summarize again</li>
+</ul>
+
+<p><em>Max 2 pages - Grading: Incomplete/Meets Expectations/Complete and thoughtful reasoning</em></p>
+<ol style="list-style-type: decimal">
+<li>How many observations (rows) are there in the training data set?</li>
+<li>How many observations are there in the testing data set?</li>
+<li>We will be using a specific training set and a specific test set. What are other ways you might select observations for the training and test data sets?</li>
+<li>Copy and paste your most informative scatterplot of earnings and market value of equity</li>
+<li>Copy and paste your most informative scatterplot of accounting and market values of equity</li>
+<li>What can you learn from your graphs in 4 and 5?</li>
+<li>How likely are your insights from 6 to apply to a different sample of data? (I want your reasoning here, not additional analysis.)</li>
+<li>Provide summary statistics of the raw and winsorized BM and EP ratios</li>
+</ol>
+
+</div>
+<div id="week-3-book-to-market-and-earnings-to-price-ratios-subsetting-data-and-industry-time-and-growth-variation-in-bm-and-ep-ratios" class="section level2">
+<h2>Week 3: Book-to-market and earnings-to-price ratios, subsetting data and industry, time, and growth variation in BM and EP ratios</h2>
+
+<p>Be able to answer and discuss the following questions:</p>
+<ul>
+<li>What information is contained in book-to-market and price-to-earnings ratios?</li>
+<li>Why use book-to-market and price-to-earnings ratios versus other ratios?</li>
+<li>What might make market-to-book or price-to-earnings ratios work or not work for valuation purposes?</li>
+</ul>
+<p>Be able to do the following:</p>
+<ul>
+<li>Summarize and interpret book-to-market and earnings-to-price ratios over time, across industries, and by level of growth</li>
+<li>Create and interpret BM and EP ratios for your chosen company</li>
+</ul>
+
+<ul>
+<li>R for Data Science - understanding variation in the data (<a href="http://r4ds.had.co.nz/exploratory-data-analysis.html" class="uri">http://r4ds.had.co.nz/exploratory-data-analysis.html</a>)</li>
+<li>Understanding market-to-book and price-to-earnings ratios
+<ul>
+<li>Basu (1997). “INVESTMENT PERFORMANCE OF COMMON STOCKS IN RELATION TO THEIR PRICE-EARNINGS RATIOS: A TEST OF THE EFFICIENT MARKET HYPOTHESIS”. (<a href="https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1540-6261.1977.tb01979.x" class="uri">https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1540-6261.1977.tb01979.x</a>)</li>
+<li>Penman (1996). “The Articulation of Price-Earnings Ratios and Market-to-Book Ratios and the Evaluation of Growth”. (<a href="https://www.jstor.org/stable/2491501?seq=1#page_scan_tab_contents" class="uri">https://www.jstor.org/stable/2491501?seq=1#page_scan_tab_contents</a>)</li>
+<li>Beaver and Morse (1978). “What Determines Price-Earnings Ratios?” (<a href="https://www.cfapubs.org/doi/abs/10.2469/faj.v34.n4.65?journalCode=faj" class="uri">https://www.cfapubs.org/doi/abs/10.2469/faj.v34.n4.65?journalCode=faj</a>)</li>
+<li>Kallapur and Trombley (2003). “The Association Between Investment Opportunity Set Proxies and Realized Growth”. (<a href="https://onlinelibrary.wiley.com/doi/abs/10.1111/1468-5957.00265" class="uri">https://onlinelibrary.wiley.com/doi/abs/10.1111/1468-5957.00265</a>) BM and EP don’t predict growth</li>
+<li>Collins, Pincus, and Xie (1999). “Equity Valuation and Negative Earnings: The Role of Book Value of Equity”. (<a href="http://www.aaajournals.org/doi/abs/10.2308/accr.1999.74.1.29" class="uri">http://www.aaajournals.org/doi/abs/10.2308/accr.1999.74.1.29</a>)</li>
+</ul></li>
+</ul>
+
+<p><em>Big questions</em></p>
+<ul>
+<li>Why do accounting values of equity and market values of equity differ?</li>
+<li>What does comparing earnings and market values of equity mean?</li>
+<li>Why might equity book value and earnings have different meanings when comparing with market values of equity?</li>
+<li>How might earnings or book value of equity be used to value a company?</li>
+</ul>
+<p><em>Working questions</em></p>
+<ul>
+<li>How persistent are BM and PE ratios?</li>
+<li>How do BM and PE ratios vary across industries?</li>
+<li>How do BM and PE ratios change as expected growth changes?</li>
+<li>How have BM and PE ratios changed over time?</li>
+</ul>
+
+<p>This section provides small chunks of code that will help form a cookbook for your analysis tasks.</p>
+<p>Create the variables we will work with.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">workdta<span class="op">$</span>bm &lt;-<span class="st"> </span>workdta<span class="op">$</span>ceq<span class="op">/</span>workdta<span class="op">$</span>mv
+workdta<span class="op">$</span>ep &lt;-<span class="st"> </span>workdta<span class="op">$</span>ib<span class="op">/</span>workdta<span class="op">$</span>mv</code></pre></div>
+<p>One way to deal with outliers is to change the extreme values setting them to sum cutoff level. Here we use a percentile of the distribution of the variable. This can be done manually by looking at the summary statistics, or we can create a specific cutoff point and program it. We can write our own functions that will allow us to reuse the same steps multiple times.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">winsor&lt;-
+<span class="st">  </span><span class="cf">function</span> (x, <span class="dt">fraction=</span><span class="fl">0.05</span>)
+  {
+    lim &lt;-<span class="st"> </span><span class="kw">quantile</span>(x, <span class="dt">probs=</span><span class="kw">c</span>(fraction, <span class="dv">1</span><span class="op">-</span>fraction))
+    x[ x <span class="op">&lt;</span><span class="st"> </span>lim[<span class="dv">1</span>] ] &lt;-<span class="st"> </span>lim[<span class="dv">1</span>]
+    x[ x <span class="op">&gt;</span><span class="st"> </span>lim[<span class="dv">2</span>] ] &lt;-<span class="st"> </span>lim[<span class="dv">2</span>]
+    x
+  }</code></pre></div>
+<p>Now apply the winsorization function to the new variables. It isn’t necessary to do in this format, but it is useful for learning this to apply in other ways.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">workdta &lt;-<span class="st"> </span>workdta <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">bm =</span> <span class="kw">winsor</span>(bm),
+         <span class="dt">ep =</span> <span class="kw">winsor</span>(ep))</code></pre></div>
+<p>We want to understand variation in the BM and EP ratios. Start simple and get more complicated. First, how do BM and EP vary by industry? NAICS industry classification codes can be found here: <a href="https://www.census.gov/cgi-bin/sssd/naics/naicsrch?chart=2017" class="uri">https://www.census.gov/cgi-bin/sssd/naics/naicsrch?chart=2017</a>.</p>
+<!---utilities: 22 finance and insurance: 52 information: 51 manufacturing: 31-33--->
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">workdta <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="kw">group_by</span>(<span class="kw">substr</span>(naics,<span class="dv">1</span>,<span class="dv">2</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">summarise</span> (<span class="dt">q1_bm =</span> <span class="kw">quantile</span>(bm,<span class="dt">probs=</span> <span class="fl">0.25</span>, <span class="dt">na.rm=</span><span class="ot">TRUE</span>),  
+             <span class="dt">med_bm =</span> <span class="kw">median</span>(bm, <span class="dt">na.rm=</span><span class="ot">TRUE</span>),
+             <span class="dt">q3_bm =</span> <span class="kw">quantile</span>(bm,<span class="dt">probs=</span> <span class="fl">0.75</span>, <span class="dt">na.rm=</span><span class="ot">TRUE</span>),  
+             <span class="dt">q1_ep =</span> <span class="kw">quantile</span>(ep,<span class="dt">probs=</span> <span class="fl">0.25</span>, <span class="dt">na.rm=</span><span class="ot">TRUE</span>),  
+             <span class="dt">med_ep =</span> <span class="kw">median</span>(ep, <span class="dt">na.rm=</span><span class="ot">TRUE</span>),
+             <span class="dt">q3_ep =</span> <span class="kw">quantile</span>(ep,<span class="dt">probs=</span> <span class="fl">0.75</span>, <span class="dt">na.rm=</span><span class="ot">TRUE</span>))</code></pre></div>
+<p>If we want to look at changes over time, we could look at this by year. We need another package to make this easier: lubridate.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">workdta<span class="op">$</span>Yr &lt;-<span class="st"> </span><span class="kw">year</span>(workdta<span class="op">$</span>datadate)</code></pre></div>
+<p>If we wanted to see how growth (or some other variable) changes with the level of BM and EP, we can group BM and EP into different levels and then summarize growth by that level. We want to look at growth (past and future). We can get, for each company, prior (lag) and future (lead) values. These look back to the row in the data before or after each row.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">temp &lt;-<span class="st"> </span>workdta <span class="op">%&gt;%</span>
+<span class="st">        </span><span class="kw">arrange</span>(gvkey,datadate) <span class="op">%&gt;%</span>
+<span class="st">        </span><span class="kw">group_by</span>(gvkey) <span class="op">%&gt;%</span>
+<span class="st">        </span><span class="kw">mutate</span>(<span class="dt">sgr_ld1 =</span> <span class="kw">log</span>(<span class="kw">lead</span>(sale,<span class="dv">1</span>)<span class="op">/</span>sale),
+               <span class="dt">sgr_lg1 =</span> <span class="kw">log</span>(sale<span class="op">/</span><span class="kw">lag</span>(sale,<span class="dv">1</span>))) <span class="op">%&gt;%</span>
+<span class="st">        </span><span class="kw">na.omit</span>()   </code></pre></div>
+<p>To rank companies by their BM or EP ratios we can do something like this.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">temp &lt;-<span class="st"> </span>temp <span class="op">%&gt;%</span>
+<span class="st">        </span><span class="kw">group_by</span>(Yr)<span class="op">%&gt;%</span>
+<span class="st">        </span><span class="kw">mutate</span>(<span class="dt">bm_dec =</span> <span class="kw">ceiling</span>(<span class="kw">dense_rank</span>(<span class="kw">desc</span>(bm))<span class="op">/</span><span class="kw">n</span>(),<span class="dt">digits=</span><span class="dv">1</span>), 
+               <span class="dt">ep_dec =</span> <span class="kw">ceiling</span>(<span class="kw">dense_rank</span>(<span class="kw">desc</span>(ep))<span class="op">/</span><span class="kw">n</span>(),<span class="dt">digits=</span><span class="dv">1</span>)) </code></pre></div>
+<p>Now we could summarize lead and lag growth by the groups created from the 10 levels of BM and EP.</p>
+<p>We might also use the approach to determine how persistent BM and EP are. In other words, if I see a company with high BM this year, what would I expect next year or what is normal for last year for a company with this level of BM. Using what we already know, we can create leads and lags of BM and EP and summarize. We might even graph it.</p>
+
+<ul>
+<li>Calculate the median levels of BM and EP for each year.</li>
+<li>Graph the median BM and EP over time.</li>
+<li>Calculate mean and median sales and asset growth for 3 years before and 3 years after each year for deciles of BM and EP.</li>
+<li>Calculate median BM and EP for 3 years before and 3 years after each year for deciles of BM and EP.</li>
+<li>Calculate BM and EP for your company</li>
+</ul>
+
+<p><em>2 page max - Grading: Incomplete/Meets Expectations/Complete and thoughtful reasoning</em></p>
+<ol style="list-style-type: decimal">
+<li>Explain, in 1 paragraph, possible reasons for differences in BM and EP across industries giving some specific examples.</li>
+<li>Graph the levels of median BM and median EP by year</li>
+<li>Explain, in 1 paragraph, possible reasons for differences in BM and EP over time.</li>
+<li>Explain, with accompanying evidence, the extent to which BM and EP reflect the market’s expectations of growth.</li>
+<li>Provide evidence on the persistence of BM and EP and explain, in 1 paragraph, what you have found.</li>
+<li>Report your company’s BM and EP and provide, in 1 paragraph, possible interpretations of BM and EP for your company.</li>
+</ol>
+
+</div>
+<div id="weeks-4-5-models-of-value-based-on-book-value-and-earnings-permanent-vs.transitory-earnings-and-modelling-methods-ols-and-related-robust-methods-non-linear-and-machine-learning-methods-tree-based-models-model-building-and-selection" class="section level2">
+<h2>Weeks 4-5: Models of value based on book-value and earnings, permanent vs. transitory earnings and modelling methods (OLS and related robust methods, non-linear and machine learning methods: tree-based models, model building and selection)</h2>
+
+<p>Be able to answer and discuss the following questions:</p>
+<ul>
+<li>What is a model of the market value of equity?</li>
+<li>What are the differences between OLS, non-linear parametric, and machine learning models?</li>
+<li>How is a model built and refined?</li>
+<li>How is a model evaluated (in and out of sample)?</li>
+<li>How does model building relate to our concerns about overworking the sample data?</li>
+<li>What are some key considerations when modeling market value as a function of book value and earnings?</li>
+</ul>
+<p>Be able to do the following:</p>
+<ul>
+<li>Prepare the data and estimate an OLS linear model of market value of equity</li>
+<li>Extract the predicted value (in sample) from the model</li>
+<li>Refine the OLS model based on economic and data-based insights</li>
+<li>Apply robust methods to the linear model</li>
+<li>Estimate a machine-learning based model of the market value of equity (random forest regression tree)</li>
+</ul>
+
+<ul>
+<li>R for data science-Model basics and building (<a href="http://r4ds.had.co.nz/model-intro.html" class="uri">http://r4ds.had.co.nz/model-intro.html</a>)</li>
+<li>OLS: Many resources online and in books - search “ordinary least squares”. For example: The multivariate social scientist Chapter 3 (<a href="http://methods.sagepub.com/book/the-multivariate-social-scientist/d49.xml" class="uri">http://methods.sagepub.com/book/the-multivariate-social-scientist/d49.xml</a>) Another helpful search “assumptions of ordinary least squares”</li>
+<li>Robust methods (Quantile regression R quantreg, other methods: SEE PREDICTIVE MODELLING BOOK)</li>
+<li>Regression trees (PREDICTIVE MODELLING BOOK- “Applied predictive modeling techniques in R: <a href="https://www.amazon.com/Applied-Predictive-Modeling-Techniques-instructions/dp/151751679X" class="uri">https://www.amazon.com/Applied-Predictive-Modeling-Techniques-instructions/dp/151751679X</a>”)</li>
+<li>Value relevance theories
+<ul>
+<li>Academic paper 1</li>
+<li>Academic paper 2</li>
+<li>Academic paper 3</li>
+</ul></li>
+<li>Value relevance models (in sample)
+<ul>
+<li>Academic paper 1</li>
+<li>Academic paper 2</li>
+<li>Academic paper 3</li>
+</ul></li>
+<li>Valuation models (applied out of sample)
+<ul>
+<li>Academic paper 1</li>
+<li>Academic paper 2</li>
+<li>Academic paper 3</li>
+</ul></li>
+</ul>
+
+<p><em>Big questions</em></p>
+<ul>
+<li>Discussion question 1</li>
+<li>Discussion question 2</li>
+<li>Discussion question 3</li>
+</ul>
+<p><em>Working questions</em></p>
+<ul>
+<li>Question to answer or task to complete 1</li>
+<li>Question to answer or task to complete 2</li>
+<li>Question to answer or task to complete 3</li>
+</ul>
+
+<p>This section provides small chunks of code that will help form a cookbook for your analysis tasks.</p>
+<p>Describe code here</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">funddta&lt;-<span class="kw">readRDS</span>(<span class="st">&quot;C:/funddta.rds&quot;</span>)</code></pre></div>
+
+<ul>
+<li>HW 1</li>
+<li>HW 2</li>
+<li>HW 3 <!--COMMENT--></li>
+</ul>
+
+<p><em>1/2 page summary - Grading: Complete/Incomplete</em></p>
+<ol style="list-style-type: decimal">
+<li>What to put in homework 1</li>
+<li>What to put in homework 2</li>
+<li>What to put in homework 3</li>
+</ol>
+<!-- OTHER NOTES:
+Penman (2010). "Combining Earnings and Book Value in Equity Valuation". (https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1911-3846.1998.tb00562.x) THIS IS ABOUT WEIGHTING EARNINGS AND BOOK VALUE IN VALUATION...
+Penman (1991). "An Evaluation of Accounting Rate-of-return" (http://journals.sagepub.com/doi/pdf/10.1177/0148558X9100600204) DIGGING INTO ROE...
+Ferriera and Santa-Clara (2011). "Forecasting stock market returns: The sum of the parts is more than the whole".
+(https://www.sciencedirect.com/science/article/pii/S0304405X11000365)
+Liu, Nissim, and Morris (2002). "Equity Valuation Using Multiples".  (https://onlinelibrary.wiley.com/doi/abs/10.1111/1475-679X.00042) FORWARD PE RATIOS WORK BEST...INDUSTRY DOESNT MATTER...HISTORICAL PE AND BM NEXT, PS WORST
+Pontiff and Schall (1998). "Book-to-market ratios as predictors of market returns". (https://www.sciencedirect.com/science/article/pii/S0304405X98000208) WORKS BECAUSE IT PREDICTS FUTURE EARNINGS...
+Fama and French (1997). "Industry costs of equity".  (https://www.sciencedirect.com/science/article/pii/S0304405X96008963) CAPM estimates imprecise
+Frankel and Lee (1998). "Accounting valuation, market expectation, and cross-sectional stock returns". (https://www.sciencedirect.com/science/article/pii/S0165410198000263) ANALYST BASED V AND VP IN RETURNS
+Penman (2010). "On Comparing Cash Flow and Accrual Accounting Models for Use in Equity Valuation: A Response to Lundholm and O'Keefe (CAR, Summer 2001)". (https://onlinelibrary.wiley.com/doi/abs/10.1506/DT0R-JNEG-QL60-7CBP)  FINITE HORIZON MATTERS WHEN CHOOSING BETWEEN VALUATION MODELS
+Penman and Sougiannis (2010). "A Comparison of Dividend, Cash Flow, and Earnings Approaches to Equity Valuation". (https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1911-3846.1998.tb00564.x)
+Nissim and Penman (2001). "Ratio Analysis and Equity Valuation: From Research to Practice". (https://link.springer.com/article/10.1023/A:1011338221623)
+Feltham and Ohlson (1995). "Valuation and Clean Surplus Accounting for Operating and Financial Activities". (https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1911-3846.1995.tb00462.x) FROM ABSTRACT: Model parameters represent persistence of abnormal earnings, growth, and accounting conservatism
+Wilcox (1984). "The P/B-ROE Valuation Model". (https://www.cfapubs.org/doi/abs/10.2469/faj.v40.n1.58?journalCode=faj)
+Alford (1992). "The Effect of the Set of Comparable Firms on the Accuracy of the Price-Earnings Valuation Method". (https://www.jstor.org/stable/2491093?seq=3#page_scan_tab_contents)
+Cheng and McNamarra (2000). "The Valuation Accuracy of the Price-Earnings and Price-Book Benchmark Valuation Methods". (https://link.springer.com/article/10.1023/A:1012050524545)
+Brief and Lawson (1992). "The Role of the Accounting Rate of Return in Financial Statement Analysis ". (https://www.jstor.org/stable/247733?seq=1#page_scan_tab_contents)
+
+Lu Zhang (2005). "The value premium" (https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1540-6261.2005.00725.x) Theory of book-to-market effect in returns.
+
+
+-->
+<!--THIS IS TEMPLATE FOR EACH WEEK-->
+</div>
+<div id="week-numbers-here-title-for-this-period" class="section level2">
+<h2>Week NUMBERS HERE: TITLE FOR THIS PERIOD</h2>
+
+<p>Be able to answer and discuss the following questions:</p>
+<ul>
+<li>Question 1</li>
+<li>Question 2</li>
+<li>Question 3…</li>
+</ul>
+<p>Be able to do the following:</p>
+<ul>
+<li>Task 1</li>
+<li>Task 2</li>
+<li>Task 3…</li>
+</ul>
+
+<ul>
+<li>Resource 1</li>
+<li>Resource 2</li>
+<li>Resource 3
+<ul>
+<li>Academic paper 1</li>
+<li>Academic paper 2</li>
+<li>Academic paper 3</li>
+</ul></li>
+</ul>
+
+<p><em>Big questions</em></p>
+<ul>
+<li>Discussion question 1</li>
+<li>Discussion question 2</li>
+<li>Discussion question 3</li>
+</ul>
+<p><em>Working questions</em></p>
+<ul>
+<li>Question to answer or task to complete 1</li>
+<li>Question to answer or task to complete 2</li>
+<li>Question to answer or task to complete 3</li>
+</ul>
+
+<p>This section provides small chunks of code that will help form a cookbook for your analysis tasks.</p>
+<p>Describe code here</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">funddta&lt;-<span class="kw">readRDS</span>(<span class="st">&quot;C:/funddta.rds&quot;</span>)</code></pre></div>
+
+<ul>
+<li>HW 1</li>
+<li>HW 2</li>
+<li>HW 3 <!--COMMENT--></li>
+</ul>
+
+<p><em>1/2 page summary - Grading: Complete/Incomplete</em></p>
+<ol style="list-style-type: decimal">
+<li>What to put in homework 1</li>
+<li>What to put in homework 2</li>
+<li>What to put in homework 3</li>
+</ol>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Texas A&amp;M University, email: <a href="mailto:jgreen@mays.tamu.edu">jgreen@mays.tamu.edu</a>. I thank Ernst &amp; Young for financial support and accounting students at the Mays Business School at Texas A&amp;M for their enthusiasm and patience.<a href="#fnref1">↩</a></p></li>
+<li id="fn2"><p>Financial Statement Analysis texts primarily focus on two things: 1. ratio analysis - something we will do. 2. Adjusting the numbers reported in financial statements to better measure the items that pertain to the valuation and forecasting goals such as common owners’ equity, net operating assets, and core operating income. We will spend some time on this, but primarily in the context of using data analytics to help inform the task. However, the in depth analysis of adjusting all of the reported accounting numbers to best reflect returns to common equity holders is an in-depth, detail oriented study that certainly merits more time than we will spend on it in this course.<a href="#fnref2">↩</a></p></li>
+</ol>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Jeremiah Green - Texas A&amp;M University" />
+
+<meta name="date" content="2018-08-23" />
+
+<title>R Introduction to Text Mining and Machine Learning</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/sandstone.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; background-color: #f8f8f8; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+pre, code { background-color: #f8f8f8; }
+code > span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code > span.dt { color: #204a87; } /* DataType */
+code > span.dv { color: #0000cf; } /* DecVal */
+code > span.bn { color: #0000cf; } /* BaseN */
+code > span.fl { color: #0000cf; } /* Float */
+code > span.ch { color: #4e9a06; } /* Char */
+code > span.st { color: #4e9a06; } /* String */
+code > span.co { color: #8f5902; font-style: italic; } /* Comment */
+code > span.ot { color: #8f5902; } /* Other */
+code > span.al { color: #ef2929; } /* Alert */
+code > span.fu { color: #000000; } /* Function */
+code > span.er { color: #a40000; font-weight: bold; } /* Error */
+code > span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #000000; } /* Constant */
+code > span.sc { color: #000000; } /* SpecialChar */
+code > span.vs { color: #4e9a06; } /* VerbatimString */
+code > span.ss { color: #4e9a06; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #000000; } /* Variable */
+code > span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code > span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code > span.ex { } /* Extension */
+code > span.at { color: #c4a000; } /* Attribute */
+code > span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code > span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 61px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 66px;
+  margin-top: -66px;
+}
+
+.section h2 {
+  padding-top: 66px;
+  margin-top: -66px;
+}
+.section h3 {
+  padding-top: 66px;
+  margin-top: -66px;
+}
+.section h4 {
+  padding-top: 66px;
+  margin-top: -66px;
+}
+.section h5 {
+  padding-top: 66px;
+  margin-top: -66px;
+}
+.section h6 {
+  padding-top: 66px;
+  margin-top: -66px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Accounting for Life</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="MainSite.html">Home</a>
+</li>
+<li>
+  <a href="TeachingSite.html">Teaching</a>
+</li>
+<li>
+  <a href="FSADA.html">Financial Statement Analysis with Data Analytics</a>
+</li>
+<li>
+  <a href="PhDStudentPrimer.html">PhD Student Primer</a>
+</li>
+<li>
+  <a href="ResearchSite.html">Research</a>
+</li>
+<li>
+  <a href="CVSite.html">CV</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">R Introduction to Text Mining and Machine Learning</h1>
+<h4 class="author"><em>Jeremiah Green - Texas A&amp;M University</em></h4>
+<h4 class="date"><em>August 23, 2018</em></h4>
+
+</div>
+
+
+<div id="introduction" class="section level2 tabset tabset-fade">
+<h2>Introduction</h2>
+<div id="overview" class="section level3">
+<h3>Overview</h3>
+<ul>
+<li>R versus SAS, STATA, Python, Perl, etc.</li>
+<li>Textual extraction (including from web)</li>
+<li>Machine learning</li>
+</ul>
+</div>
+<div id="r-basics" class="section level3">
+<h3>R Basics</h3>
+<ul>
+<li>R and R-Studio</li>
+<li>Packages</li>
+<li>A few notes:
+<ul>
+<li>R is case sensitive</li>
+<li>Google searches usually necessary</li>
+</ul></li>
+</ul>
+</div>
+<div id="textual-extraction-and-analysis" class="section level3">
+<h3>Textual extraction and analysis</h3>
+<ul>
+<li>All based on extracting words or numbers</li>
+<li>Some sort of count or comparison with benchmarks</li>
+<li>Regular expressions
+<ul>
+<li>The key tool for matching and extracting text</li>
+<li>Slight variations between programming languages, but very similar syntax and functionality</li>
+<li>R stringr cheatsheet: <a href="https://github.com/rstudio/cheatsheets/blob/master/strings.pdf" class="uri">https://github.com/rstudio/cheatsheets/blob/master/strings.pdf</a></li>
+<li>actual text matching</li>
+<li>special characters</li>
+</ul></li>
+</ul>
+</div>
+<div id="regular-expression-special-characters" class="section level3">
+<h3>Regular expression special characters</h3>
+<p>Note- in R (stringr), some special characters require a double backslash (e.g. \d versus in other languages)</p>
+<ul>
+<li>\d is any number digit</li>
+<li>\w is any letter</li>
+<li>“.” is match anything</li>
+<li>“*&quot; matches as many times as possible</li>
+<li>“+” matches 1 or more times</li>
+<li>^ is the beginning of a string</li>
+<li>{n,N} match n to N times</li>
+<li>$ is the end of a string</li>
+<li>| is OR</li>
+<li>look after a pattern (?&lt;=)</li>
+<li>look before a pattern (?=)</li>
+</ul>
+</div>
+<div id="stringr-functions" class="section level3">
+<h3>Stringr functions</h3>
+<ul>
+<li>str_detect()</li>
+<li>str_replace()</li>
+<li>str_extract()</li>
+<li>str_split()</li>
+</ul>
+</div>
+</div>
+<div id="applicationsweb-and-text-data" class="section level2 tabset tabset-fade">
+<h2>Applications–Web and text data</h2>
+<p>Let’s say we want to get data from SEC filings. We’ll choose 8-Ks and work with WMT’s most recent 8-K. It’s important to remember that we have to be careful when pulling from websites. Not all sites allow web scraping and even those that do may have some restrictions.</p>
+<div id="get-sec-filings" class="section level3">
+<h3>Get SEC filings</h3>
+<p>As is the case with many things we might decide to do, others have written packages that help simplify the process.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#install.packages(&quot;edgarWebR&quot;,repos = &quot;http://cran.us.r-project.org&quot;)</span>
+<span class="kw">library</span>(edgarWebR)
+filings &lt;-<span class="st"> </span><span class="kw">company_filings</span>(<span class="st">&quot;WMT&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;8-K&quot;</span>, <span class="dt">count =</span> <span class="dv">100</span>)
+<span class="kw">head</span>(filings)</code></pre></div>
+<pre><code>##       accession_number act file_number filing_date accepted_date
+## 1 0000104169-18-000081  34   001-06991  2018-08-16    2018-08-16
+## 2 0001193125-18-204205  34   001-06991  2018-06-26    2018-06-26
+## 3 0000104169-18-000058  34   001-06991  2018-06-05    2018-06-05
+## 4 0000104169-18-000051  34   001-06991  2018-06-04    2018-06-04
+## 5 0000104169-18-000047  34   001-06991  2018-05-17    2018-05-17
+## 6 0000104169-18-000041  34   001-06991  2018-05-11    2018-05-11
+##                                                                                               href
+## 1 https://www.sec.gov/Archives/edgar/data/104169/000010416918000081/0000104169-18-000081-index.htm
+## 2 https://www.sec.gov/Archives/edgar/data/104169/000119312518204205/0001193125-18-204205-index.htm
+## 3 https://www.sec.gov/Archives/edgar/data/104169/000010416918000058/0000104169-18-000058-index.htm
+## 4 https://www.sec.gov/Archives/edgar/data/104169/000010416918000051/0000104169-18-000051-index.htm
+## 5 https://www.sec.gov/Archives/edgar/data/104169/000010416918000047/0000104169-18-000047-index.htm
+## 6 https://www.sec.gov/Archives/edgar/data/104169/000010416918000041/0000104169-18-000041-index.htm
+##   type film_number      form_name         description   size
+## 1  8-K   181022287 Current report items 2.02 and 9.01   6 MB
+## 2  8-K    18920043 Current report items 8.01 and 9.01   1 MB
+## 3  8-K    18880137 Current report           item 5.07  62 KB
+## 4  8-K    18876945 Current report items 7.01 and 9.01 122 KB
+## 5  8-K    18841690 Current report items 2.02 and 9.01   5 MB
+## 6  8-K    18827951 Current report           item 1.01  35 KB</code></pre>
+<p>Get information about the filings pulled with the package. We’ll look at the first one.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">filings<span class="op">$</span>filing_date[[<span class="dv">1</span>]]</code></pre></div>
+<pre><code>## [1] &quot;2018-08-16 CDT&quot;</code></pre>
+<p>We can get the url that we can use to go get the data.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">filings<span class="op">$</span>href[[<span class="dv">1</span>]]</code></pre></div>
+<pre><code>## [1] &quot;https://www.sec.gov/Archives/edgar/data/104169/000010416918000081/0000104169-18-000081-index.htm&quot;</code></pre>
+<p>There are a number of packages and functions that can help with web crawling and scraping. A simple one helps get url pages. Here get the page that we have the link for.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#install.packages(&quot;curl&quot;,repos = &quot;http://cran.us.r-project.org&quot;)</span>
+<span class="kw">library</span>(curl)</code></pre></div>
+<p>We need another link here that actually gives the press release. The link we want looks like this: <a href="/Archives/edgar/data/104169/000010416918000081/earningsrelease-7312018.htm">.</p>
+<p>We can start using some of those text tools. Let’g get the full web address for the earnings release we want.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#install.packages(&quot;stringr&quot;,repos = &quot;http://cran.us.r-project.org&quot;)</span>
+<span class="kw">library</span>(stringr)
+<span class="kw">str_extract</span>(temp,<span class="st">&quot;/Archives.*?earningsrelease.*?htm&quot;</span>)</code></pre></div>
+<pre><code>## [1] &quot;/Archives/edgar/data/104169/000010416918000081/earningsrelease-7312018.htm&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lnk &lt;-<span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;https://www.sec.gov&quot;</span>,<span class="kw">str_extract</span>(temp,<span class="st">&quot;/Archives.*?earningsrelease.*?htm&quot;</span>),<span class="dt">sep=</span><span class="st">&quot;&quot;</span>)
+lnk</code></pre></div>
+<pre><code>## [1] &quot;https://www.sec.gov/Archives/edgar/data/104169/000010416918000081/earningsrelease-7312018.htm&quot;</code></pre>
+<p>Now we can look at the earnings release and what we might want to extract from here.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">req &lt;-<span class="st"> </span><span class="kw">curl_fetch_memory</span>(lnk)
+temp&lt;-(<span class="kw">rawToChar</span>(req<span class="op">$</span>content))</code></pre></div>
+</div>
+<div id="analyze-filing" class="section level3">
+<h3>Analyze filing</h3>
+<p>Get length - first just the number of characters</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">nchar</span>(temp)</code></pre></div>
+<pre><code>## [1] 637978</code></pre>
+<p>Get length - number of words but try to get just text.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">temp2&lt;-<span class="kw">str_extract_all</span>(temp,<span class="kw">regex</span>(<span class="st">&quot;(?&lt;=</span><span class="ch">\\</span><span class="st">&gt;).*?(?=</span><span class="ch">\\</span><span class="st">&lt;)&quot;</span>))
+temp2&lt;-<span class="st"> </span><span class="kw">paste</span>(temp2, <span class="dt">sep=</span><span class="st">&quot; &quot;</span>, <span class="dt">collapse=</span><span class="st">&quot; &quot;</span>)
+temp2&lt;-<span class="kw">str_replace_all</span>(temp2,<span class="st">&quot;[</span><span class="ch">\&quot;</span><span class="st">,()]&quot;</span>,<span class="st">&quot;&quot;</span>)
+test&lt;-<span class="kw">str_split</span>(temp2,<span class="st">&quot; +&quot;</span>)
+<span class="co">#test[[1]][101]</span>
+<span class="kw">length</span>(test[[<span class="dv">1</span>]])</code></pre></div>
+<pre><code>## [1] 6170</code></pre>
+<p>Get non-GAAP EPS: “Adjusted EPS of $1.29”</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str_extract</span>(temp2,<span class="kw">regex</span>(<span class="st">&quot;Adjusted EPS of $1.29&quot;</span>,<span class="dt">ignore_case=</span>T))</code></pre></div>
+<pre><code>## [1] NA</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str_extract</span>(temp2,<span class="kw">regex</span>(<span class="st">&quot;Adjusted EPS&quot;</span>,<span class="dt">ignore_case=</span>T))</code></pre></div>
+<pre><code>## [1] &quot;Adjusted EPS&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str_extract</span>(temp2,<span class="kw">regex</span>(<span class="st">&quot;Adjusted EPS.+?of&quot;</span>,<span class="dt">ignore_case=</span>T))</code></pre></div>
+<pre><code>## [1] &quot;Adjusted EPS   2   &amp;#32;of&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str_extract</span>(temp2,<span class="kw">regex</span>(<span class="st">&quot;Adjusted EPS.*?</span><span class="ch">\\</span><span class="st">$</span><span class="ch">\\</span><span class="st">d+</span><span class="ch">\\</span><span class="st">.</span><span class="ch">\\</span><span class="st">d</span><span class="ch">\\</span><span class="st">d&quot;</span>,<span class="dt">ignore_case=</span>T))</code></pre></div>
+<pre><code>## [1] &quot;Adjusted EPS   2   &amp;#32;of $1.29&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str_extract</span>(temp2,<span class="kw">regex</span>(<span class="st">&quot;(?&lt;=Adjusted EPS.{0,20})</span><span class="ch">\\</span><span class="st">$</span><span class="ch">\\</span><span class="st">d+</span><span class="ch">\\</span><span class="st">.</span><span class="ch">\\</span><span class="st">d</span><span class="ch">\\</span><span class="st">d&quot;</span>,<span class="dt">ignore_case=</span>T))</code></pre></div>
+<pre><code>## [1] &quot;$1.29&quot;</code></pre>
+<p>Get table information.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#install.packages(&quot;rvest&quot;,repos = &quot;http://cran.us.r-project.org&quot;)</span>
+<span class="kw">library</span>(rvest)
+filing &lt;-<span class="st"> </span><span class="kw">html</span>(lnk)
+test&lt;-filing <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">html_nodes</span>(<span class="st">&quot;table&quot;</span>) 
+try&lt;-<span class="kw">html_table</span>(test[[<span class="dv">2</span>]],<span class="dt">fill=</span><span class="ot">TRUE</span>)
+<span class="co">#install.packages(&quot;tidyverse&quot;,repos = &quot;http://cran.us.r-project.org&quot;)</span>
+<span class="kw">library</span>(tidyverse)
+try2&lt;-try<span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">select</span>(X2,X3,X4,X5,X6)<span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">filter</span>(<span class="kw">nchar</span>(X2)<span class="op">&gt;</span><span class="dv">0</span>)<span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">rename</span>(<span class="dt">var =</span> X2,<span class="dt">Y2018=</span>X3,<span class="dt">Y2019=</span>X4,<span class="dt">Ch1=</span>X5,<span class="dt">Ch2=</span>X6) 
+try2</code></pre></div>
+<pre><code>##                                     var  Y2018  Y2019   Ch1   Ch2
+## 1                               Revenue $128.0 $123.4  $4.7  3.8%
+## 2          Revenue (constant currency)2 $127.8 $123.4  $4.4  3.6%
+## 3                      Operating income   $5.8   $6.0 -$0.2 -3.7%
+## 4 Operating income (constant currency)2   $5.7   $6.0 -$0.2 -4.0%</code></pre>
+</div>
+</div>
+<div id="applicationsmachine-learning" class="section level2 tabset tabset-fade">
+<h2>Applications–Machine learning</h2>
+<p>Let’s switch gears and try some non-standard regression-like analysis. We will just do OLS and then a non-linear machine learning approach (classification and regression trees using a random forest approach).</p>
+<div id="get-compustat-data" class="section level3">
+<h3>Get Compustat data</h3>
+<p>Stuff we need.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">usr &lt;-<span class="st"> &quot;yourIDhere&quot;</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#install.packages(&quot;dplyr&quot;,repos = &quot;http://cran.us.r-project.org&quot;)</span>
+<span class="co">#install.packages(&quot;zoo&quot;,repos = &quot;http://cran.us.r-project.org&quot;)</span>
+<span class="co">#install.packages(&quot;RPostgres&quot;,repos = &quot;http://cran.us.r-project.org&quot;)</span>
+<span class="co">#install.packages(&quot;getPass&quot;,repos = &quot;http://cran.us.r-project.org&quot;)</span>
+<span class="kw">library</span>(dplyr)
+<span class="kw">library</span>(RPostgres)
+<span class="kw">library</span>(getPass)
+<span class="kw">library</span>(zoo)</code></pre></div>
+<p>Connect to wrds databases</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">wrds &lt;-<span class="st"> </span><span class="kw">dbConnect</span>(<span class="kw">Postgres</span>(),
+                  <span class="dt">host=</span><span class="st">&#39;wrds-pgdata.wharton.upenn.edu&#39;</span>,
+                  <span class="dt">port=</span><span class="dv">9737</span>,<span class="dt">user=</span>usr,<span class="dt">password=</span><span class="kw">getPass</span>(),  <span class="co"># change user here</span>
+                  <span class="dt">dbname=</span><span class="st">&#39;wrds&#39;</span>,
+                  <span class="dt">sslmode=</span><span class="st">&#39;require&#39;</span>)</code></pre></div>
+<pre><code>## Please enter password in TK window (Alt+Tab)</code></pre>
+<p>Get Compustat data</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sql &lt;-<span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;SELECT gvkey,datadate,fyear,ni,sale,cogs,xsga,oancf,rect,invt,ap,dp,ppent,at,csho&quot;</span>,
+             <span class="st">&quot;FROM comp.funda WHERE datadate&gt;=&#39;1995-01-01&#39; AND ni IS NOT NULL&quot;</span>,
+             <span class="st">&quot;AND sale IS NOT NULL AND cogs IS NOT NULL AND xsga IS NOT NULL AND oancf IS NOT NULL&quot;</span>,
+             <span class="st">&quot;AND rect IS NOT NULL AND invt IS NOT NULL AND ap IS NOT NULL AND ppent IS NOT NULL&quot;</span>,
+             <span class="st">&quot;AND dp IS NOT NULL AND ppent IS NOT NULL AND at IS NOT NULL AND csho IS NOT NULL&quot;</span>)
+res &lt;-<span class="st"> </span><span class="kw">dbSendQuery</span>(wrds, sql)
+temp &lt;-<span class="st"> </span><span class="kw">dbFetch</span>(res, <span class="dt">n =</span> <span class="op">-</span><span class="dv">1</span>) 
+<span class="kw">head</span>(temp)</code></pre></div>
+<pre><code>##    gvkey   datadate fyear     ni     sale    cogs    xsga  oancf    rect
+## 1 001004 1995-05-31  1994 10.463  451.395 363.196  53.433 15.255 110.420
+## 2 001004 1996-05-31  1995 16.012  504.990 404.110  58.323 24.760 107.138
+## 3 001004 1997-05-31  1996 23.025  589.328 468.500  65.651  9.531 122.944
+## 4 001004 1998-05-31  1997 35.657  782.123 619.434  83.690 22.823 163.359
+## 5 001004 1999-05-31  1998 41.671  918.036 727.714  95.878 28.525 164.302
+## 6 001004 2000-05-31  1999 35.163 1024.333 833.107 102.195 10.051 128.348
+##      invt      ap     dp   ppent      at   csho
+## 1 170.328  51.393 10.328  56.596 425.814 15.961
+## 2 175.084  59.005 10.115  54.831 437.846 15.998
+## 3 217.239  77.567 12.287  71.108 529.584 18.204
+## 4 263.425 112.980 14.283  82.905 670.559 27.704
+## 5 304.499 129.703 17.063 104.012 726.630 27.381
+## 6 336.018 107.879 18.373 110.003 740.998 26.865</code></pre>
+</div>
+<div id="data-prep" class="section level3">
+<h3>Data prep</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#remove duplicates # create variables only relying on accounting data</span>
+temp &lt;-<span class="st"> </span>temp<span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">arrange</span>(gvkey,datadate,fyear)<span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">distinct</span>(gvkey,datadate,fyear,<span class="dt">.keep_all =</span> <span class="ot">TRUE</span>)<span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(gvkey)<span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">ni_ld1 =</span> <span class="kw">lead</span>(ni,<span class="dv">1</span>))<span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">na.omit</span>()</code></pre></div>
+<p>We’ll keep it simple. There are many approaches trying to predict earnings. Right now we’ll just use what comes out of Compustat variables with out scaling, dealing with outliers, creating other variables, etc.</p>
+</div>
+<div id="ols" class="section level3">
+<h3>OLS</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(<span class="kw">lm</span>(ni_ld1<span class="op">~</span>ni<span class="op">+</span>sale<span class="op">+</span>cogs<span class="op">+</span>xsga<span class="op">+</span>oancf<span class="op">+</span>rect<span class="op">+</span>invt<span class="op">+</span>ap<span class="op">+</span>dp<span class="op">+</span>ppent<span class="op">+</span>at<span class="op">+</span>csho,<span class="dt">data=</span>temp))</code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = ni_ld1 ~ ni + sale + cogs + xsga + oancf + rect + 
+##     invt + ap + dp + ppent + at + csho, data = temp)
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+## -95211      0     11     15 116866 
+## 
+## Coefficients:
+##               Estimate Std. Error  t value Pr(&gt;|t|)    
+## (Intercept) -1.225e+01  2.365e+00   -5.181 2.21e-07 ***
+## ni           2.561e-01  3.026e-03   84.636  &lt; 2e-16 ***
+## sale         3.834e-01  3.189e-03  120.197  &lt; 2e-16 ***
+## cogs        -3.792e-01  3.221e-03 -117.724  &lt; 2e-16 ***
+## xsga        -3.071e-01  4.032e-03  -76.167  &lt; 2e-16 ***
+## oancf        1.302e-02  1.670e-03    7.793 6.59e-15 ***
+## rect         2.545e-03  3.848e-04    6.614 3.75e-11 ***
+## invt         9.855e-03  1.262e-03    7.809 5.79e-15 ***
+## ap           1.026e-02  3.429e-04   29.912  &lt; 2e-16 ***
+## dp          -5.453e-01  7.371e-03  -73.974  &lt; 2e-16 ***
+## ppent        2.620e-02  9.342e-04   28.046  &lt; 2e-16 ***
+## at          -1.037e-02  1.930e-04  -53.722  &lt; 2e-16 ***
+## csho         3.416e-03  1.167e-03    2.928  0.00341 ** 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 876.6 on 143364 degrees of freedom
+## Multiple R-squared:  0.5379, Adjusted R-squared:  0.5378 
+## F-statistic: 1.39e+04 on 12 and 143364 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+<div id="random-forest" class="section level3">
+<h3>Random Forest</h3>
+<p>We will discuss the basic idea of a classification and regression tree and how random forests help with some aspects of regression trees.</p>
+<p>Start with single regression tree.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#install.packages(&quot;rpart&quot;,repos = &quot;http://cran.us.r-project.org&quot;)</span>
+<span class="kw">library</span>(rpart)
+e &lt;-<span class="st"> </span><span class="kw">rpart</span>(ni_ld1<span class="op">~</span>ni<span class="op">+</span>sale<span class="op">+</span>cogs<span class="op">+</span>xsga<span class="op">+</span>oancf<span class="op">+</span>rect<span class="op">+</span>invt<span class="op">+</span>ap<span class="op">+</span>dp<span class="op">+</span>ppent<span class="op">+</span>at<span class="op">+</span>csho,<span class="dt">method=</span><span class="st">&quot;anova&quot;</span>,<span class="dt">data=</span>temp)
+<span class="kw">plot</span>(e, <span class="dt">uniform=</span><span class="ot">TRUE</span>, <span class="dt">main=</span><span class="st">&quot;Regression Tree&quot;</span>)
+<span class="kw">text</span>(e, <span class="dt">use.n=</span><span class="ot">TRUE</span>, <span class="dt">all=</span><span class="ot">TRUE</span>, <span class="dt">cex=</span>.<span class="dv">8</span>)</code></pre></div>
+<p><img src="PhDStudentPrimer_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#install.packages(&quot;randomForest&quot;,repos = &quot;http://cran.us.r-project.org&quot;)</span>
+<span class="kw">library</span>(randomForest)
+e &lt;-<span class="st"> </span><span class="kw">randomForest</span>(ni_ld1<span class="op">~</span>ni<span class="op">+</span>sale<span class="op">+</span>cogs<span class="op">+</span>xsga<span class="op">+</span>oancf<span class="op">+</span>rect<span class="op">+</span>invt<span class="op">+</span>ap<span class="op">+</span>dp<span class="op">+</span>ppent<span class="op">+</span>at<span class="op">+</span>csho,<span class="dt">ntree=</span><span class="dv">100</span>,<span class="dt">maxnodes=</span><span class="dv">100</span>,<span class="dt">data=</span>temp)
+p1 &lt;-<span class="st"> </span><span class="kw">predict</span>(e,temp)
+fit &lt;-<span class="st"> </span><span class="kw">lm</span>(temp<span class="op">$</span>ni_ld1<span class="op">~</span>p1)
+<span class="kw">summary</span>(fit)<span class="op">$</span>r.squared</code></pre></div>
+<pre><code>## [1] 0.7921105</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">e &lt;-<span class="st"> </span><span class="kw">randomForest</span>(ni_ld1<span class="op">~</span>ni<span class="op">+</span>sale<span class="op">+</span>cogs<span class="op">+</span>xsga<span class="op">+</span>oancf<span class="op">+</span>rect<span class="op">+</span>invt<span class="op">+</span>ap<span class="op">+</span>dp<span class="op">+</span>ppent<span class="op">+</span>at<span class="op">+</span>csho,<span class="dt">ntree=</span><span class="dv">100</span>,<span class="dt">maxnodes=</span><span class="dv">20</span>,<span class="dt">data=</span>temp)
+p1 &lt;-<span class="st"> </span><span class="kw">predict</span>(e,temp)
+fit &lt;-<span class="st"> </span><span class="kw">lm</span>(temp<span class="op">$</span>ni_ld1<span class="op">~</span>p1)
+<span class="kw">summary</span>(fit)<span class="op">$</span>r.squared</code></pre></div>
+<pre><code>## [1] 0.6546395</code></pre>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

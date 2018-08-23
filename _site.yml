@@ -1,0 +1,17 @@
+name: "accounting-for-life"
+output_dir: "."
+navbar:
+  title: "Accounting for Life"
+  left:
+    - text: "Home"
+      href: MainSite.html
+    - text: "Teaching"
+      href: TeachingSite.html
+    - text: "Financial Statement Analysis with Data Analytics"
+      href: FSADA.html
+    - text: "PhD Student Primer"
+      href: PhDStudentPrimer.html
+    - text: "Research"
+      href: ResearchSite.html
+    - text: "CV"
+      href: CVSite.html
